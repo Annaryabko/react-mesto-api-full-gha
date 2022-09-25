@@ -50,7 +50,8 @@ export const login = (email, password) => {
     })
     .then((response) => {
       if (response.status === 200) {
-          return response.json();
+          return response.json()
+            .then(data => data.data);
       } else {
           throw new Error('Something went wrong');
       }
