@@ -8,7 +8,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 178.154.204.125
+IP 178.154.204.125
 
 Frontend https://anna.nomorepartiesxyz.ru/
 
