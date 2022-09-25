@@ -2,12 +2,8 @@ const jwt = require('jsonwebtoken');
 const UnauthorisedError = require('../errors/unauthorised');
 
 module.exports.auth = (req, res, next) => {
-  let token = req.cookies.jwt;
+  const token = req.cookies.jwt;
   let payload;
-
-  if (!token) {
-    [, token] = req.headers.authorization.split(' ');
-  }
 
   try {
     payload = jwt.verify(token, 'mysecret');
