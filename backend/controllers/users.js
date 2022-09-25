@@ -122,7 +122,7 @@ module.exports.login = (req, res, next) => {
             if (isUserValid) {
               const token = jwt.sign({
                 _id: user._id,
-              }, 'mysecret');
+              }, process.env.JWT_SECRET || 'mysecret');
               res.cookie('jwt', token, {
                 maxAge: 3600000,
                 httpOnly: true,

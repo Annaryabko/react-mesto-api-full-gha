@@ -6,7 +6,7 @@ module.exports.auth = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, 'mysecret');
+    payload = jwt.verify(token, process.env.JWT_SECRET || 'mysecret');
   } catch (err) {
     next(new UnauthorisedError('Для доступа к запрашиваемому ресурсу требуется аутентификация'));
     return;
