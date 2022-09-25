@@ -127,7 +127,7 @@ module.exports.login = (req, res, next) => {
                 maxAge: 3600000,
                 httpOnly: true,
                 sameSite: 'none',
-                secure: true,
+                secure: process.env.NODE_ENV === 'production',
               });
               res.send({ data: user.toJSON() });
             } else {
