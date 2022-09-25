@@ -22,7 +22,7 @@ const { PORT = 3000 } = process.env;
 const allowedCors = [
   'https://anna.nomorepartiesxyz.ru',
   'http://anna.nomorepartiesxyz.ru',
-  'localhost:3000',
+  'http://localhost:3000',
 ];
 
 app.use((req, res, next) => {
