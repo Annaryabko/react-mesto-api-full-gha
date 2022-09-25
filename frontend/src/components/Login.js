@@ -12,7 +12,7 @@ function Login({history, ...props}) {
     
     login(loginUser, password)
       .then((token) => {
-        props.onSuccess(token);
+        props.onSuccess('test');
       })
       .catch(() => {
         props.onError();

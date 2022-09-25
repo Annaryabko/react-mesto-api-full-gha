@@ -6,6 +6,7 @@ export class Api {
   _makeRequest(url, method, body) {
     const fetchOptions = {
       method,
+      credentials: 'include',
       headers: this._options.headers,
     };
     if (body) {
@@ -14,7 +15,7 @@ export class Api {
 
     return fetch(`${this._options.baseUrl}${url}`, fetchOptions).then((res) => {
       if (res.ok) {
-        return res.json();
+        return res.json().then(data => data.data);
       }
       return Promise.reject(`Ошибка: ${res.status}`);
     });
@@ -23,6 +24,7 @@ export class Api {
   getInitialCards() {
     return this._makeRequest("cards", "GET");
   }
+  
   editName(data) {
     return this._makeRequest("users/me", "PATCH", {
       name: data.name,
