@@ -1,0 +1,8 @@
+.popup__infoToolTip {
+  text-align: center;
+  /* opacity: 1; */
+}
+
+.popup__infoToolTip .popup__button {
+  display: none;
+}

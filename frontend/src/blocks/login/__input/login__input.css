@@ -1,0 +1,9 @@
+.login__input {
+  border-bottom: 1px solid #CCCCCC;
+  color: white;
+  background-color: transparent;
+}
+
+.login__input:focus{
+  outline: none;
+}

@@ -8,8 +8,8 @@
 
 ## Ссылки на проект
 
-IP-адрес x.x.x.x
+IP-адрес 178.154.204.125
 
-Frontend https://...
+Frontend https://anna.nomorepartiesxyz.ru/
 
-Backend https://...
+Backend https://anna-b.nomorepartiesxyz.ru/
