@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
+const validator = require('validator');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { auth } = require('./middlewares/auth');
@@ -62,7 +63,7 @@ app.get('/crash-test', () => {
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(2),
+    password: Joi.string().required(),
   }),
 }), login);
 
@@ -72,10 +73,16 @@ app.post(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().pattern(/https?:\/\/(www\.)*[a-z0-9-._~:/?#[\]@!$&'()*+,;=]*#?/i),
+      avatar: Joi.string().custom((value, helpers) => {
+        if (validator.isURL(value)) {
+          return value;
+        }
+
+        return helpers.error('any.invalid');
+      }),
       email: Joi.string().required().email(),
-      password: Joi.string().required().min(1),
-    }).unknown(true),
+      password: Joi.string().required(),
+    }),
   }),
   createUser,
 );

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
 const {
   listCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
@@ -11,7 +12,13 @@ router.post(
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
-      link: Joi.string().pattern(/https?:\/\/(www\.)*[a-z0-9-._~:/?#[\]@!$&'()*+,;=]*#?/i).required(),
+      link: Joi.string().custom((value, helpers) => {
+        if (validator.isURL(value)) {
+          return value;
+        }
+
+        return helpers.error('any.invalid');
+      }).required(),
     }),
   }),
   createCard,

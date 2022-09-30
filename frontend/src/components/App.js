@@ -13,13 +13,11 @@ import InfoTooltip from "./InfoTooltip.js";
 import { Route, Switch, useRouteMatch, BrowserRouter, Redirect } from 'react-router-dom';
 import { withRouter } from "react-router";
 import ProtectedRoute from "./ProtectedRoute.js";
-import {userinfo} from '../utils/auth.js';
 import successIcon from '../images/success-icon.svg';
 import errorIcon from '../images/error-icon.svg';
 
 function App({match, location, history}) {
-  const [authToken, setAuthToken] = useState(localStorage.getItem('token') || '');
-  const [authUserInfo, setAuthUserInfo] = useState({});
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn') || false);
   const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = useState(false);
@@ -30,22 +28,6 @@ function App({match, location, history}) {
   const [currentUser, setCurrentUser] = useState({});
   const url = process.env.REACT_APP_ROUTE_PREFIX || '';
 
-
-  useEffect(() => {
-    if (!authToken) {
-      return;
-    }
-
-    userinfo(authToken)
-      .then((data) => {
-        setAuthUserInfo(data);
-      })
-      .catch((e) => {
-        localStorage.removeItem('token');
-        setAuthToken('');
-      });
-  }, [authToken]);
-
   useEffect(() => {
     api
       .getUser()
@@ -53,12 +35,16 @@ function App({match, location, history}) {
         setCurrentUser(data);
       })
       .catch((err) => {
-        console.log(err);
+        setLoggedIn(false);
+        localStorage.setItem('loggedIn', false);
       });
   }, []);
 
   useEffect(() => {
-    // if (cards.length > 0) { return; }
+    if (!loggedIn) {
+      return;
+    }
+
     api
       .getInitialCards()
       .then((data) => {
@@ -67,7 +53,7 @@ function App({match, location, history}) {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [loggedIn]);
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i === currentUser._id);
@@ -165,9 +151,9 @@ function App({match, location, history}) {
     history.push(`${url}/sign-in`);
   }
 
-  function onLoginSuccess(token) {
-    localStorage.setItem('token', token);
-    setAuthToken(token);
+  function onLoginSuccess() {
+    setLoggedIn(true);
+    localStorage.setItem('loggedIn', true);
     history.push(`${url}/`);
   }
 
@@ -177,7 +163,8 @@ function App({match, location, history}) {
 
   function onLogout() {
     localStorage.removeItem('token');
-    setAuthToken('');
+    setLoggedIn(false);
+    localStorage.setItem('loggedIn', false);
     history.push(`${url}/sign-in`);
   }
 
@@ -205,7 +192,7 @@ function App({match, location, history}) {
           onClose={closeAllPopups}
           onUpdateCards={handleAddPlaceSubmit}
         />
-          <Header onLogout={onLogout} email={authUserInfo.email} pathname={url} />
+          <Header onLogout={onLogout} email={currentUser.email} pathname={url} />
 
           <Switch>
             <Route exact path={`${url}/sign-up`}>
@@ -227,7 +214,7 @@ function App({match, location, history}) {
 
             <ProtectedRoute
               path={`${url}/`}
-              loggedIn={authToken}
+              loggedIn={loggedIn}
               component={Main}
               onEditProfile={editProfile}
               onAddPlace={addPlace}
