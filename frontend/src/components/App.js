@@ -17,7 +17,7 @@ import successIcon from '../images/success-icon.svg';
 import errorIcon from '../images/error-icon.svg';
 
 function App({match, location, history}) {
-  const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn') || false);
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn') === 'true');
   const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = useState(false);
@@ -29,6 +29,10 @@ function App({match, location, history}) {
   const url = process.env.REACT_APP_ROUTE_PREFIX || '';
 
   useEffect(() => {
+    if (!loggedIn) {
+      return;
+    }
+
     api
       .getUser()
       .then((data) => {
@@ -38,7 +42,7 @@ function App({match, location, history}) {
         setLoggedIn(false);
         localStorage.setItem('loggedIn', false);
       });
-  }, []);
+  }, [loggedIn]);
 
   useEffect(() => {
     if (!loggedIn) {
@@ -162,9 +166,8 @@ function App({match, location, history}) {
   }
 
   function onLogout() {
-    localStorage.removeItem('token');
-    setLoggedIn(false);
     localStorage.setItem('loggedIn', false);
+    setLoggedIn(false);
     history.push(`${url}/sign-in`);
   }
 
